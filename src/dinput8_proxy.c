@@ -136,8 +136,21 @@ static const char *ini_find(const char *txt, const char *key)
     return NULL;
 }
 
+/* Proton/Wine: the game crashes on start with shadow map resolution above 0 (Steam Deck) */
+static int running_on_wine(void)
+{
+    HMODULE nt = GetModuleHandleA("ntdll.dll");
+    return nt && GetProcAddress(nt, "wine_get_version") != NULL;
+}
+
+static void force_key(char *out, size_t *len, const char *key, const char *val)
+{
+    *len += sprintf(out + *len, "%s = %s\r\n", key, val);
+}
+
 static void ensure_user_ini(const char *path)
 {
+    int wine = running_on_wine();
     DWORD size, i;
     char *txt = read_file(path, &size), *out, *line;
     size_t len = 0;
@@ -151,7 +164,12 @@ static void ensure_user_ini(const char *path)
         char *eol = strchr(line, '\n');
         size_t ll = eol ? (size_t)(eol - line + 1) : strlen(line);
         int replaced = 0;
-        if (first) {
+        if (wine && !strncmp(line, "VIDEO_ShadowMapRes", 18) && (line[18] == ' ' || line[18] == '=')) {
+            const char *q = line + 18;
+            while (*q == ' ' || *q == '=') q++;
+            if (atoi(q) != 0) { force_key(out, &len, "VIDEO_ShadowMapRes", "0"); replaced = changed = 1; }
+        }
+        if (!replaced && first) {
             for (i = 0; i < NUSER_KEYS; i++) {
                 const char *k = USER_KEYS[i][0];
                 size_t kl = strlen(k);
@@ -335,7 +353,7 @@ HRESULT WINAPI DirectInput8Create(HINSTANCE h, DWORD ver, REFIID riid, LPVOID *o
         g_warned = 1;
         MessageBoxA(NULL,
             "TimeShift Gamepad Mod: this TimeShift.Exe is not supported, the gamepad patches were not applied.\n\n"
-            "Use the multi-core fix exe v1.2 (see README). The game will start without the mod.",
+            "Use TimeShift.Exe of patch 1.02 without Steam DRM (see README). The game will start without the mod.",
             "TimeShift Gamepad Mod", MB_OK | MB_ICONWARNING);
     }
     return fn ? fn(h, ver, riid, out, outer) : E_FAIL;

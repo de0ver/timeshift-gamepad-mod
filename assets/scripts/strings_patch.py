@@ -3,7 +3,7 @@ sys.path.insert(0,'/tmp/claude-0/-home-claude/5a395db8-292c-5075-84b1-06a93cc5a5
 from s3didx import read_index
 S='/tmp/claude-0/-home-claude/5a395db8-292c-5075-84b1-06a93cc5a564/scratchpad'
 d,a,es,ds,io=read_index('/mnt/user-data/outputs/pc_mod/patch_original.s3darc')
-EN={'UI_GP_MODVER':'Xbox 360 Gamepad Mod v1.2','UI_GP_SENS':'Gamepad sensitivity','UI_GP_SENS_HINT':'Camera speed for the right stick',
+EN={'UI_GP_MODVER':'Xbox 360 Gamepad Mod v1.3','UI_GP_SENS':'Gamepad sensitivity','UI_GP_SENS_HINT':'Camera speed for the right stick',
     'UI_GP_INVERT':'Gamepad invert Y','UI_GP_INVERT_HINT':'Invert vertical look on the right stick',
     'UI_GP_VIBR':'Gamepad vibration','UI_GP_VIBR_HINT':'Controller rumble',
     'UI_GP_DZ':'Gamepad dead zone','UI_GP_DZ_HINT':'Ignore small stick movements',
@@ -11,7 +11,7 @@ EN={'UI_GP_MODVER':'Xbox 360 Gamepad Mod v1.2','UI_GP_SENS':'Gamepad sensitivity
     'UI_GP_FWDBACK':'Forward/Back','UI_GP_STRAFE':'Strafe','UI_GP_TURN':'Turn','UI_GP_LOOKUD':'Look Up/Down',
     'UI_CTRL_buttons_1':'Common','UI_CTRL_buttons_2':'Left-Handed','UI_CTRL_buttons_3':'Swapped','UI_CTRL_buttons_4':'Swapped Left-Handed',
     'UI_CTRL_thumb_1':'Common','UI_CTRL_thumb_2':'Left-Handed','UI_CTRL_thumb_3':'Mixed','UI_CTRL_thumb_4':'Mixed Left-Handed'}
-RU={'UI_GP_MODVER':'Xbox 360 Gamepad Mod v1.2','UI_GP_SENS':'Чувствительность геймпада','UI_GP_SENS_HINT':'Скорость поворота камеры правым стиком',
+RU={'UI_GP_MODVER':'Xbox 360 Gamepad Mod v1.3','UI_GP_SENS':'Чувствительность геймпада','UI_GP_SENS_HINT':'Скорость поворота камеры правым стиком',
     'UI_GP_INVERT':'Инверсия геймпада по Y','UI_GP_INVERT_HINT':'Инверсия вертикального обзора правым стиком',
     'UI_GP_VIBR':'Вибрация геймпада','UI_GP_VIBR_HINT':'Вибрация контроллера',
     'UI_GP_DZ':'Мертвая зона стиков','UI_GP_DZ_HINT':'Игнорировать малые отклонения стиков',

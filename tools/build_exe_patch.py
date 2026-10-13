@@ -57,6 +57,8 @@ def main():
             struct.pack_into('<4I', d, o(e) + 0x44 + n * 0x10, 1, c, 0, 0)
             n += 1
         struct.pack_into('<I', d, o(e) + 0x40, n)
+    # skip the "Incompatible Video Driver" dialog (135): act as if Continue (EndDialog 0) was pressed
+    put(0x5032c2, bytes.fromhex('83c41431c090'), bytes.fromhex('ff152414d100'))
     if len(sys.argv) > 2:
         pe = struct.unpack_from('<I', d, 0x3c)[0]; opt = struct.unpack_from('<H', d, pe + 20)[0]
         struct.pack_into('<I', d, pe + 24 + opt + 8, 0x910000)      # .text VirtualSize covers the caves
