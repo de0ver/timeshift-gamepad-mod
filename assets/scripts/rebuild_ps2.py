@@ -38,18 +38,9 @@ def fixblk(m):
     k=re.search(rb'XBoxShortCut\s*=\s*"?([ABXY])\b',b)
     t=re.search(rb'(\btext\s*=\s*"?)(UI_[A-Za-z0-9_]+)',b)
     if not k or not t or t.group(2).endswith(b'_GP'+k.group(1)): return b
+    if t.group(2) in (b'UI_YES', b'UI_NO'): return b      # exit confirmation: plain YES / NO
     pairs.add((t.group(2).decode(),k.group(1).decode())); gpn+=1
     b=b[:t.start(2)]+t.group(2)+b'_GP'+k.group(1)+b[t.end(2):]
-    # 360-style shortcuts: the pad presses these directly, the cursor never lands on them
-    # (allowFocus only applies while the gamepad is active, see dinput8_proxy.c)
-    extra=b''
-    esc=re.search(rb'type\s*=\s*esc_button',b)
-    if k.group(1)==b'A' or (k.group(1)==b'B' and esc):
-        if not re.search(rb'allowFocus',b): extra+=b'\r\n   allowFocus = No'
-    if k.group(1)==b'A' and not re.search(rb'\bok\s*=',b): extra+=b'\r\n   ok = Yes'
-    if extra:
-        global sc_n; sc_n+=1
-        b=b[:-1].rstrip(b' \t')+extra+b'\r\n}'
     return b
 for files in blocks:
     for f in files:
