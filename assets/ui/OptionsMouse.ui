@@ -1,0 +1,657 @@
+name = OptionsMouse
+style = styMenu
+child = [
+{
+type = text
+text = UI_FRAME_OPTIONS_MOUSE
+posX = 0, 100%
+posY = 6%, 30
+textScale = 15
+textAlign = centerX centerY
+font = font_main
+}
+{
+type = box
+posX = center, 90%
+posY = 60, 50
+border = true
+child = [
+{
+type = select
+name = page
+posX = 70, -70
+posY = 10, 30
+text = UI_GP_PAGE
+textAlign = left centerY
+}
+]
+}
+{
+type = box
+posX = center, 90%
+posY = 110, 305
+border = true
+child = [
+{
+type = box
+name = grpCamera
+posX = center, 100%
+posY = 0, 100%
+child = [
+{
+type = slider
+textScale = 7.5
+posX = 3%, 96%
+posY = 8, 26
+textAlign = left centerY
+name = MouseSens
+text = UI_ADVCTRL_MOUSE_SENS
+hint = UI_ADVCTRL_MOUSE_SENS_HINT
+section = Input
+typeVal = Float
+minVal = 0.04
+maxVal = 4.0
+mapToMin = 1
+mapToMax = 100
+textFormatter = "%.0f%"
+}
+{
+type = select
+textScale = 7.5
+posX = 3%, 96%
+posY = 38, 26
+textAlign = left centerY
+name = InvertMouse
+text = UI_ADVCTRL_INVERSE_MOUSE
+hint = UI_ADVCTRL_INVERSE_MOUSE_HINT
+section = Input
+typeVal = Bool
+}
+{
+type = select
+textScale = 7.5
+posX = 3%, 96%
+posY = 68, 26
+textAlign = left centerY
+name = MouseCursorThin
+text = UI_ADVCTRL_MOUSE_CURSOR
+hint = UI_ADVCTRL_MOUSE_CURSOR_HINT
+section = Input
+typeVal = Bool
+}
+{
+type = slider
+textScale = 7.5
+posX = 3%, 96%
+posY = 98, 26
+textAlign = left centerY
+name = LookSensitivity
+text = UI_GP_SENS
+hint = UI_GP_SENS_HINT
+section = Gamepad
+typeVal = Float
+minVal = 10
+maxVal = 300
+mapToMin = 10
+mapToMax = 300
+textFormatter = "%.0f%"
+}
+{
+type = select
+textScale = 7.5
+posX = 3%, 96%
+posY = 128, 26
+textAlign = left centerY
+name = InvertLookY
+text = UI_GP_INVERT
+hint = UI_GP_INVERT_HINT
+section = Gamepad
+typeVal = Bool
+}
+{
+type = select
+textScale = 7.5
+posX = 3%, 96%
+posY = 158, 26
+textAlign = left centerY
+name = Vibration
+text = UI_GP_VIBR
+hint = UI_GP_VIBR_HINT
+section = Gamepad
+typeVal = Bool
+}
+{
+type = slider
+textScale = 7.5
+posX = 3%, 96%
+posY = 188, 26
+textAlign = left centerY
+name = DeadZone
+text = UI_GP_DZ
+hint = UI_GP_DZ_HINT
+section = Gamepad
+typeVal = Float
+minVal = 0
+maxVal = 50
+mapToMin = 0
+mapToMax = 50
+textFormatter = "%.0f%"
+}
+{
+type = box
+posX = center,95%
+posY = -60,2
+texture = bg_selection
+}
+{
+type = text
+name = Hint
+posX = 3%, 95%
+posY = -55, 30
+textScale = 8
+textAlign = leftX centerY
+font = font_regular
+textColor = 200 255 255 255
+wordwrap = yes
+}
+]
+}
+{
+type = box
+name = grpButtons
+posX = center, 100%
+posY = 0, 100%
+child = [
+{
+type = select
+name = GamepadButtons
+posX = 70, -70
+posY = 10, 30
+text = UI_CONTROLS_BUTTONS
+textAlign = left centerY
+section = Gamepad
+typeVal = String
+}
+]
+}
+{
+type = box
+name = grpSticks
+posX = center, 100%
+posY = 0, 100%
+child = [
+{
+type = select
+name = GamepadSticks
+posX = 70, -70
+posY = 10, 30
+text = UI_CONTROLS_THUMBSTICKS
+textAlign = left centerY
+section = Gamepad
+typeVal = String
+}
+]
+}
+{
+type = box
+name = padCtrl
+boxColor = 0 0 0 0
+posX = center, 80%
+posY = 35, -15
+child = [
+{
+type = box
+name = padImage
+boxColor = 255 255 255 255
+texture = gp_pad_spider
+posX = 0, 100%
+posY = 10%, 87%
+}
+{
+type = text
+name = LeftUp
+posX = 130, 30
+posY = 50, 10
+textAlign = right centerY
+textScale = 9.5
+lineSpace = 0.75
+}
+{
+type = text
+name = LeftLeft
+posX = 80, 30
+posY = 110, 10
+textAlign = right centerY
+textScale = 9.5
+lineSpace = 0.75
+}
+{
+type = text
+name = RightDown
+posX = -230, 30
+posY = -20, 10
+textAlign = left centerY
+textScale = 9.5
+}
+{
+type = text
+name = RightRight
+posX = -170, 30
+posY = -100, 10
+textScale = 9.5
+}
+{
+type = box
+name = SpiderGroup
+boxColor = 0 0 0 0
+posX = 20, -10
+posY = 18, 30
+child = [
+{
+type = text
+name = ctrl_261
+posX = 230, 60
+posY = 0, 10
+textScale = 9.5
+lineSpace = 0.75
+textAlign = right centerY
+}
+{
+type = text
+name = ctrl_274
+posX = 37, 60
+posY = 0, 10
+textScale = 9.5
+lineSpace = 0.75
+textAlign = right centerY
+}
+{
+type = text
+name = ctrl_272
+posX = 20, 65
+posY = 40, 10
+textScale = 9.5
+lineSpace = 0.75
+textAlign = right centerY
+}
+{
+type = text
+name = ctrl_266
+posX = 15, 60
+posY = 75, 10
+textScale = 9.5
+lineSpace = 0.75
+textAlign = right top
+}
+{
+type = text
+name = ctrl_262
+posX = 0, 70
+posY = 115, 10
+textScale = 9.5
+lineSpace = 0.75
+textAlign = right centerY
+}
+{
+type = text
+name = ctrl_264
+posX = 0, 60
+posY = 155, 10
+textScale = 9.5
+lineSpace = 0.75
+textAlign = right centerY
+}
+{
+type = text
+name = ctrl_265
+posX = 7, 60
+posY = 185, 10
+textScale = 9.5
+lineSpace = 0.75
+textAlign = right centerY
+}
+{
+type = text
+name = ctrl_263
+posX = 30, 75
+posY = 215, 10
+textScale = 9.5
+lineSpace = 0.75
+textAlign = right centerY
+}
+{
+type = text
+name = ctrl_260
+posX = -260, 60
+posY = 0, 10
+textScale = 9.5
+lineSpace = 0.75
+textAlign = left centerY
+}
+{
+type = text
+name = ctrl_275
+posX = -110, 60
+posY = 0, 10
+textScale = 9.5
+lineSpace = 0.75
+}
+{
+type = text
+name = ctrl_273
+posX = -100, 60
+posY = 43, 10
+textScale = 9.5
+lineSpace = 0.75
+}
+{
+type = text
+name = ctrl_271
+posX = -85, 60
+posY = 70, 10
+textScale = 9.5
+lineSpace = 0.75
+}
+{
+type = text
+name = ctrl_269
+posX = -75, 60
+posY = 110, 10
+textScale = 9.5
+lineSpace = 0.75
+}
+{
+type = text
+name = ctrl_270
+posX = -75, 50
+posY = 150, 10
+textScale = 9.5
+lineSpace = 0.75
+}
+{
+type = text
+name = ctrl_268
+posX = -85, 60
+posY = 190, 20
+textScale = 9.5
+lineSpace = 0.75
+}
+{
+type = text
+name = ctrl_267
+posX = -120, 60
+posY = 230, 10
+textScale = 9.5
+lineSpace = 0.75
+}
+]
+}
+]
+}
+]
+}
+{
+type = box
+border = true
+posY = -65, 40
+child = [
+{
+type = esc_button
+name = Back
+text = UI_BTN_BACK
+textAlign = left centerY
+textScale = 12
+posX = 10, 100
+posY = 5, 30
+XBoxShortCut = B
+}
+{
+type = button
+name = Restore
+text = UI_BTN_DEFAULTS
+textAlign = centerX centerY
+textScale = 12
+posX = center, 25%
+posY = 5, 30
+XBoxShortCut = Y
+}
+{
+type = button
+name = Accept
+text = UI_BTN_ACCEPT
+textAlign = right centerY
+posX = -110, 100
+posY = 5, 30
+textScale = 12
+XBoxShortCut = A
+ok = Yes
+}
+]
+}
+]
+
+ssl = <<<
+var inited : bool
+var mouseSens : float
+
+override OnInit
+inited := false
+Element("MouseSens").InitVal()
+mouseSens := Element("MouseSens").GetVal()
+Element("InvertMouse").AddItem("UI_SON", "1")
+Element("InvertMouse").AddItem("UI_SOFF", "0")
+Element("InvertMouse").InitVal()
+Element("MouseCursorThin").AddItem("UI_ADVCTRL_MOUSE_CURSOR_THICK", "0")
+Element("MouseCursorThin").AddItem("UI_ADVCTRL_MOUSE_CURSOR_THIN", "1")
+Element("MouseCursorThin").InitVal()
+Element("LookSensitivity").InitVal()
+Element("InvertLookY").AddItem("UI_SON", "1")
+Element("InvertLookY").AddItem("UI_SOFF", "0")
+Element("InvertLookY").InitVal()
+Element("Vibration").AddItem("UI_SON", "1")
+Element("Vibration").AddItem("UI_SOFF", "0")
+Element("Vibration").InitVal()
+Element("DeadZone").InitVal()
+Element("GamepadButtons").AddItem("UI_CTRL_buttons_1", "1")
+Element("GamepadButtons").AddItem("UI_CTRL_buttons_2", "2")
+Element("GamepadButtons").AddItem("UI_CTRL_buttons_3", "3")
+Element("GamepadButtons").AddItem("UI_CTRL_buttons_4", "4")
+Element("GamepadButtons").InitVal()
+Element("GamepadSticks").AddItem("UI_CTRL_thumb_1", "1")
+Element("GamepadSticks").AddItem("UI_CTRL_thumb_2", "2")
+Element("GamepadSticks").AddItem("UI_CTRL_thumb_3", "3")
+Element("GamepadSticks").AddItem("UI_CTRL_thumb_4", "4")
+Element("GamepadSticks").InitVal()
+Element("ctrl_271").SetText("UI_CTRL_CMD_WPN_NEXT")
+Element("ctrl_270").SetText("UI_GP_USE")
+Element("ctrl_261").SetText("UI_CTRL_CMD_SHOWFRAGS")
+Element("ctrl_260").SetText("UI_CTRL_CMD_UI")
+Element("ctrl_263").SetText("UI_CTRL_CMD_NEXT_GRENADE")
+Element("ctrl_264").SetText("UI_CTRL_CMD_WPN_PREV")
+Element("ctrl_265").SetText("UI_CTRL_CMD_WPN_NEXT")
+Element("ctrl_262").SetText("")
+Element("page").AddItem("UI_GP_PAGE_CAMERA", "grpCamera")
+Element("page").AddItem("UI_GP_PAGE_BUTTONS", "grpButtons")
+Element("page").AddItem("UI_GP_PAGE_STICKS", "grpSticks")
+Element("page").SetVal("grpCamera")
+ShowPage("grpCamera")
+inited := true
+end
+
+override OnSelectSelection("page")
+ShowPage(id)
+end
+
+override OnSelectSelection("GamepadButtons")
+SetButtons(id)
+end
+
+override OnSelectSelection("GamepadSticks")
+SetSticks(id)
+end
+
+func ShowPage(id : string)
+Element("grpCamera").Show(false)
+Element("grpButtons").Show(false)
+Element("grpSticks").Show(false)
+Element("padCtrl").Show(false)
+Element(id).Show(true)
+if id == "grpButtons"
+Element("padCtrl").Show(true)
+Element("padImage").SetTexture("gp_pad_spider")
+Element("SpiderGroup").Show(true)
+Element("LeftUp").Show(false)
+Element("LeftLeft").Show(false)
+Element("RightDown").Show(false)
+Element("RightRight").Show(false)
+SetButtons(Element("GamepadButtons").GetVal())
+end
+if id == "grpSticks"
+Element("padCtrl").Show(true)
+Element("padImage").SetTexture("gp_pad")
+Element("SpiderGroup").Show(false)
+Element("LeftUp").Show(true)
+Element("LeftLeft").Show(true)
+Element("RightDown").Show(true)
+Element("RightRight").Show(true)
+SetSticks(Element("GamepadSticks").GetVal())
+end
+end
+
+func SetButtons(id : string)
+if id == "1"
+Element("ctrl_274").SetText("UI_CTRL_CMD_ATTACK_2")
+Element("ctrl_275").SetText("UI_CTRL_CMD_ATTACK_1")
+Element("ctrl_272").SetText("UI_GP_TIME")
+Element("ctrl_273").SetText("UI_CTRL_CMD_ACTIVATE_GREN_AUTO")
+Element("ctrl_268").SetText("UI_CTRL_CMD_JUMP")
+Element("ctrl_266").SetText("UI_CTRL_CMD_CROUCH")
+Element("ctrl_267").SetText("UI_CTRL_CMD_MINIZOOM")
+Element("ctrl_269").SetText("UI_CTRL_CMD_ATTACK_3")
+else if id == "2"
+Element("ctrl_274").SetText("UI_CTRL_CMD_ATTACK_1")
+Element("ctrl_275").SetText("UI_CTRL_CMD_ATTACK_2")
+Element("ctrl_272").SetText("UI_CTRL_CMD_ACTIVATE_GREN_AUTO")
+Element("ctrl_273").SetText("UI_GP_TIME")
+Element("ctrl_268").SetText("UI_CTRL_CMD_CROUCH")
+Element("ctrl_266").SetText("UI_CTRL_CMD_MINIZOOM")
+Element("ctrl_267").SetText("UI_CTRL_CMD_JUMP")
+Element("ctrl_269").SetText("UI_CTRL_CMD_ATTACK_3")
+else if id == "3"
+Element("ctrl_274").SetText("UI_CTRL_CMD_ATTACK_2")
+Element("ctrl_275").SetText("UI_CTRL_CMD_ATTACK_1")
+Element("ctrl_272").SetText("UI_GP_TIME")
+Element("ctrl_273").SetText("UI_CTRL_CMD_ACTIVATE_GREN_AUTO")
+Element("ctrl_268").SetText("UI_CTRL_CMD_JUMP")
+Element("ctrl_266").SetText("UI_CTRL_CMD_CROUCH")
+Element("ctrl_267").SetText("UI_CTRL_CMD_ATTACK_3")
+Element("ctrl_269").SetText("UI_CTRL_CMD_MINIZOOM")
+else if id == "4"
+Element("ctrl_274").SetText("UI_CTRL_CMD_ATTACK_1")
+Element("ctrl_275").SetText("UI_CTRL_CMD_ATTACK_2")
+Element("ctrl_272").SetText("UI_CTRL_CMD_ACTIVATE_GREN_AUTO")
+Element("ctrl_273").SetText("UI_GP_TIME")
+Element("ctrl_268").SetText("UI_CTRL_CMD_CROUCH")
+Element("ctrl_266").SetText("UI_CTRL_CMD_ATTACK_3")
+Element("ctrl_267").SetText("UI_CTRL_CMD_JUMP")
+Element("ctrl_269").SetText("UI_CTRL_CMD_MINIZOOM")
+end
+end
+
+func SetSticks(id : string)
+if id == "1"
+Element("LeftUp").SetText("UI_GP_FWDBACK")
+Element("LeftLeft").SetText("UI_GP_STRAFE")
+Element("RightDown").SetText("UI_GP_LOOKUD")
+Element("RightRight").SetText("UI_GP_TURN")
+Element("padImage").SetTexture("gp_pad_sticks1")
+else if id == "2"
+Element("LeftUp").SetText("UI_GP_LOOKUD")
+Element("LeftLeft").SetText("UI_GP_TURN")
+Element("RightDown").SetText("UI_GP_FWDBACK")
+Element("RightRight").SetText("UI_GP_STRAFE")
+Element("padImage").SetTexture("gp_pad_sticks2")
+else if id == "3"
+Element("LeftUp").SetText("UI_GP_FWDBACK")
+Element("LeftLeft").SetText("UI_GP_TURN")
+Element("RightDown").SetText("UI_GP_LOOKUD")
+Element("RightRight").SetText("UI_GP_STRAFE")
+Element("padImage").SetTexture("gp_pad_sticks3")
+else if id == "4"
+Element("LeftUp").SetText("UI_GP_LOOKUD")
+Element("LeftLeft").SetText("UI_GP_STRAFE")
+Element("RightDown").SetText("UI_GP_FWDBACK")
+Element("RightRight").SetText("UI_GP_TURN")
+Element("padImage").SetTexture("gp_pad_sticks4")
+end
+end
+
+override OnUpdate
+if inited == true
+$ui.SetMouseSens(Element("MouseSens").GetVal(), 10.0, 1.6, false)
+end
+end
+
+override OnButtonPressed("Restore")
+InitRestoreConfirm($ui.ShowFrame("Confirmation"))
+end
+
+func InitRestoreConfirm(frm : object)
+frm.Element("Message").SetText("UI_MOUSE_DEFAULTS_CONFIRM")
+frm.Element("Caption").SetText("UI_DEFAULTS_CONFIRM_CAP")
+frm.SetStr("confid", "Restore")
+end
+
+override OnButtonPressed("Back")
+Element("MouseSens").InitVal()
+Element("InvertMouse").InitVal()
+Element("MouseCursorThin").InitVal()
+Element("LookSensitivity").InitVal()
+Element("InvertLookY").InitVal()
+Element("Vibration").InitVal()
+Element("DeadZone").InitVal()
+Element("GamepadButtons").InitVal()
+Element("GamepadSticks").InitVal()
+$ui.SetMouseSens(mouseSens, 10.0, 1.6, false)
+$ui.BackFrame()
+end
+
+override OnButtonPressed("Accept")
+AcceptValues()
+$ui.BackFrame()
+end
+
+override OnResult("Restore", "Yes")
+SetStr("DefaultChosen", "Yes")
+Element("MouseSens").SetVal(0.98)
+Element("InvertMouse").SetVal("0")
+Element("MouseCursorThin").SetVal("no")
+Element("LookSensitivity").SetVal(100.0)
+Element("InvertLookY").SetVal("0")
+Element("Vibration").SetVal("1")
+Element("DeadZone").SetVal(22.0)
+Element("GamepadButtons").SetVal("1")
+Element("GamepadSticks").SetVal("1")
+SetButtons("1")
+SetSticks("1")
+end
+
+func AcceptValues()
+$ui.SetMouseSens(Element("MouseSens").GetVal(), 10.0, 1.6, true)
+Element("MouseSens").AcceptVal()
+Element("InvertMouse").AcceptVal()
+Element("MouseCursorThin").AcceptVal()
+Element("LookSensitivity").AcceptVal()
+Element("InvertLookY").AcceptVal()
+Element("Vibration").AcceptVal()
+Element("DeadZone").AcceptVal()
+Element("GamepadButtons").AcceptVal()
+Element("GamepadSticks").AcceptVal()
+$ui.ApplySettings()
+$ui.FlushCfg()
+end
+
+override OnFocus
+Element("Hint").SetText(id)
+end
+>>>
