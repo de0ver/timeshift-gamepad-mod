@@ -109,35 +109,70 @@ static void backup_once(const char *path)
     CopyFileA(path, bak, TRUE);   /* TRUE: never overwrite an existing backup */
 }
 
-/* user.ini: flat "key = value" lines; add the mod's keys when they are missing. */
+/* user.ini: flat "key = value" lines.
+ * The mod's keys are added when missing. On the mod's first run in a profile (LookSensitivity missing,
+ * or 0 because the game saved an empty slider) the stick settings are reset to defaults and the
+ * time-control radial menu (TimeShortcuts, LB) is switched on, since the PC default is No. */
+static const char *USER_KEYS[][2] = {
+    {"LookSensitivity", "100"}, {"InvertLookY", "no"}, {"MoveSensitivity", "100"},
+    {"DeadZone", "22"}, {"Vibration", "yes"},
+    {"GamepadButtons", "\"1\""}, {"GamepadSticks", "\"1\""}, {"TimeShortcuts", "yes"},
+};
+#define NUSER_KEYS (sizeof USER_KEYS / sizeof USER_KEYS[0])
+
+/* returns pointer to the value of `key` on its own line, or NULL */
+static const char *ini_find(const char *txt, const char *key)
+{
+    size_t kl = strlen(key);
+    const char *s = txt;
+    while ((s = strstr(s, key)) != NULL) {
+        if ((s == txt || s[-1] == '\n') && (s[kl] == ' ' || s[kl] == '=' || s[kl] == '\t')) {
+            s += kl;
+            while (*s == ' ' || *s == '\t' || *s == '=') s++;
+            return s;
+        }
+        s += kl;
+    }
+    return NULL;
+}
+
 static void ensure_user_ini(const char *path)
 {
-    static const char *keys[][2] = {
-        {"LookSensitivity", "100"}, {"InvertLookY", "no"}, {"MoveSensitivity", "100"},
-        {"DeadZone", "22"}, {"Vibration", "yes"},
-        {"GamepadButtons", "\"1\""}, {"GamepadSticks", "\"1\""},
-    };
     DWORD size, i;
-    char *txt = read_file(path, &size), *out;
-    size_t len;
+    char *txt = read_file(path, &size), *out, *line;
+    size_t len = 0;
+    const char *v;
+    int first, changed = 0;
     if (!txt) return;     /* first start: the game creates the file, the mod uses defaults */
+    v = ini_find(txt, "LookSensitivity");
+    first = !v || atof(v) < 10.0;
     out = (char *)HeapAlloc(GetProcessHeap(), 0, size + 1024);
-    memcpy(out, txt, size);
-    len = size;
-    for (i = 0; i < sizeof keys / sizeof keys[0]; i++) {
-        const char *k = keys[i][0], *s = txt;
-        size_t kl = strlen(k);
-        int found = 0;
-        while ((s = strstr(s, k)) != NULL) {
-            if ((s == txt || s[-1] == '\n') && (s[kl] == ' ' || s[kl] == '=' || s[kl] == '\t')) { found = 1; break; }
-            s += kl;
+    for (line = txt; *line; ) {
+        char *eol = strchr(line, '\n');
+        size_t ll = eol ? (size_t)(eol - line + 1) : strlen(line);
+        int replaced = 0;
+        if (first) {
+            for (i = 0; i < NUSER_KEYS; i++) {
+                const char *k = USER_KEYS[i][0];
+                size_t kl = strlen(k);
+                if (!strncmp(line, k, kl) && (line[kl] == ' ' || line[kl] == '=' || line[kl] == '\t')) {
+                    len += sprintf(out + len, "%s = %s\r\n", k, USER_KEYS[i][1]);
+                    replaced = changed = 1;
+                    break;
+                }
+            }
         }
-        if (!found) {
+        if (!replaced) { memcpy(out + len, line, ll); len += ll; }
+        line += ll;
+    }
+    for (i = 0; i < NUSER_KEYS; i++) {
+        if (!ini_find(txt, USER_KEYS[i][0])) {
             if (len && out[len - 1] != '\n') { out[len++] = '\r'; out[len++] = '\n'; }
-            len += sprintf(out + len, "%s = %s\r\n", k, keys[i][1]);
+            len += sprintf(out + len, "%s = %s\r\n", USER_KEYS[i][0], USER_KEYS[i][1]);
+            changed = 1;
         }
     }
-    if (len != size) { backup_once(path); write_file(path, out, (DWORD)len); }
+    if (changed) { backup_once(path); write_file(path, out, (DWORD)len); }
     HeapFree(GetProcessHeap(), 0, out);
     HeapFree(GetProcessHeap(), 0, txt);
 }
@@ -268,6 +303,7 @@ static void setup_configs(void)
              (folder[0] && folder[strlen(folder) - 1] != '\\') ? "\\" : "", name);
     snprintf(f, sizeof f, "%scontrols.ini", dir);   patch_controls(f);   /* defaults for new profiles */
     snprintf(f, sizeof f, "%scontrols.ini", prof);  patch_controls(f);
+    snprintf(f, sizeof f, "%suser.ini", dir);       ensure_user_ini(f);   /* defaults for new profiles */
     snprintf(f, sizeof f, "%suser.ini", prof);      ensure_user_ini(f);
 }
 
