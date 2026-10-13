@@ -30,7 +30,7 @@ print('hud files',hud)
 
 # GPFIX: buttons with XBoxShortCut get text key suffixed _GP<letter> (exe hook strips it when no pad)
 import re,json
-pairs=set(); gpn=0
+pairs=set(); gpn=0; sc_n=0
 blk=re.compile(rb'\{[^{}]*\}')
 def fixblk(m):
     global gpn
@@ -39,12 +39,23 @@ def fixblk(m):
     t=re.search(rb'(\btext\s*=\s*"?)(UI_[A-Za-z0-9_]+)',b)
     if not k or not t or t.group(2).endswith(b'_GP'+k.group(1)): return b
     pairs.add((t.group(2).decode(),k.group(1).decode())); gpn+=1
-    return b[:t.start(2)]+t.group(2)+b'_GP'+k.group(1)+b[t.end(2):]
+    b=b[:t.start(2)]+t.group(2)+b'_GP'+k.group(1)+b[t.end(2):]
+    # 360-style shortcuts: the pad presses these directly, the cursor never lands on them
+    # (allowFocus only applies while the gamepad is active, see dinput8_proxy.c)
+    extra=b''
+    esc=re.search(rb'type\s*=\s*esc_button',b)
+    if k.group(1)==b'A' or (k.group(1)==b'B' and esc):
+        if not re.search(rb'allowFocus',b): extra+=b'\r\n   allowFocus = No'
+    if k.group(1)==b'A' and not re.search(rb'\bok\s*=',b): extra+=b'\r\n   ok = Yes'
+    if extra:
+        global sc_n; sc_n+=1
+        b=b[:-1].rstrip(b' \t')+extra+b'\r\n}'
+    return b
 for files in blocks:
     for f in files:
         if b'XBoxShortCut' in f[2]:
             f[2]=blk.sub(fixblk,f[2])
-json.dump(sorted(pairs),open(S+'/ui/gp_pairs.json','w')); print('gp buttons',gpn,'pairs',len(pairs))
+json.dump(sorted(pairs),open(S+'/ui/gp_pairs.json','w')); print('gp buttons',gpn,'shortcut-fixed',sc_n,'pairs',len(pairs))
 # recompute offsets properly (second pass not needed for replacement since keyed by original offsets)
 assert done==len(REPL), done
 # original compressed blocks for reuse

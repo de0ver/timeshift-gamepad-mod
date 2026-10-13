@@ -271,13 +271,129 @@ static void setup_configs(void)
     snprintf(f, sizeof f, "%suser.ini", prof);      ensure_user_ini(f);
 }
 
+/* ---------------------------------------------------------------- menu shortcuts (Xbox 360 style)
+ *
+ * On the 360, the buttons in a menu's bottom bar ("A ACCEPT", "B BACK", "A YES", "B NO") are
+ * shortcuts: the pad button presses them directly, and the cursor never moves onto them.
+ * The PC UI only presses the focused button on ENTER (pad A), so this adds:
+ *   - allowFocus: the shortcut buttons carry "allowFocus = No" in patch.s3darc; the three places
+ *     that read that flag see it only while the gamepad is the active device, so mouse and
+ *     keyboard behave as before;
+ *   - Button::OnCommand(ENTER): while the gamepad is active and the focused element is not a
+ *     button (a slider, a select row, or nothing), the frame's visible "ok" button handles A.
+ */
+#define G_PADLAST   (*(volatile int *)0x10E0F18)
+#define UI_MANAGER  (*(char **)0x1095FC8)
+#define CMD_ENTER   0x3F5
+
+static const unsigned BUTTON_VTABLES[] = { 0xDB2A48, 0xDB2B70, 0xDB2C98, 0xDB2DC0 };
+
+typedef int (__fastcall *BtnCmd_t)(void *btn, void *edx, int cmd, int a, int b);
+static BtnCmd_t g_btn_orig;
+static DWORD g_ok_tick;
+static int g_ok_a, g_ok_b;
+
+static int is_button(void *e)
+{
+    unsigned i, vt;
+    if (!e) return 0;
+    vt = *(unsigned *)e;
+    for (i = 0; i < sizeof BUTTON_VTABLES / sizeof BUTTON_VTABLES[0]; i++)
+        if (vt == BUTTON_VTABLES[i]) return 1;
+    return 0;
+}
+
+static int is_hidden(char *e)        /* same test as 0x7009E0: hidden/disabled flags up the parent chain */
+{
+    int depth = 0;
+    while (e && depth++ < 64) {
+        if (*(unsigned *)(e + 0x18) & 6) return 1;
+        e = *(char **)(e + 0x40);
+    }
+    return 0;
+}
+
+static int __fastcall btn_command_hook(void *btn, void *edx, int cmd, int a, int b)
+{
+    if (cmd == CMD_ENTER && G_PADLAST && UI_MANAGER) {
+        void **focus = (void **)(UI_MANAGER + 0x19C);
+        void *f = *focus;
+        int is_ok = (*(unsigned *)((char *)btn + 0x1C) & 8) != 0;
+        if (is_ok && f != btn && !is_button(f) && !is_hidden((char *)btn)) {
+            DWORD now = GetTickCount();
+            int r;
+            if (now - g_ok_tick < 40 && g_ok_a == a && g_ok_b == b) return 0;   /* one ok button per press */
+            g_ok_tick = now; g_ok_a = a; g_ok_b = b;
+            *focus = btn;
+            r = g_btn_orig(btn, edx, cmd, a, b);
+            if (*focus == btn) *focus = f;
+            return r;
+        }
+    }
+    return g_btn_orig(btn, edx, cmd, a, b);
+}
+
+/* allowFocus reads: "mov eax,[reg+0x18]; and eax,0x400" replaced by a call to one of these */
+extern void af_ecx(void), af_edi(void), af_esi(void);
+__asm__(".intel_syntax noprefix\n"
+        "_af_ecx: mov eax, [ecx+0x18]\n jmp 1f\n"
+        "_af_edi: mov eax, [edi+0x18]\n jmp 1f\n"
+        "_af_esi: mov eax, [esi+0x18]\n"
+        "1: and eax, 0x400\n"
+        "   cmp dword ptr [0x10E0F18], 0\n"
+        "   jne 2f\n"
+        "   mov eax, 0x400\n"
+        "2: ret\n"
+        ".att_syntax prefix\n");
+
+static int write_code(unsigned va, const void *bytes, unsigned len, const void *expect)
+{
+    DWORD old;
+    if (expect && memcmp((void *)(ULONG_PTR)va, expect, len) != 0) return 0;
+    VirtualProtect((void *)(ULONG_PTR)va, len, PAGE_EXECUTE_READWRITE, &old);
+    memcpy((void *)(ULONG_PTR)va, bytes, len);
+    VirtualProtect((void *)(ULONG_PTR)va, len, old, &old);
+    return 1;
+}
+
+static void call_patch(unsigned va, void *target, const char *expect8)
+{
+    unsigned char b[8] = { 0xE8, 0, 0, 0, 0, 0x90, 0x90, 0x90 };
+    int rel = (int)((ULONG_PTR)target - (va + 5));
+    memcpy(b + 1, &rel, 4);
+    write_code(va, b, 8, expect8);
+}
+
+static void install_menu_hooks(void)
+{
+    static const unsigned char prologue[6] = { 0x55, 0x8B, 0xEC, 0x83, 0xE4, 0xF8 };
+    unsigned char *tr;
+    unsigned char jmp[6] = { 0xE9, 0, 0, 0, 0, 0x90 };
+    int rel;
+    if (memcmp((void *)0x73B410, prologue, 6) != 0) return;
+    tr = (unsigned char *)VirtualAlloc(NULL, 16, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+    if (!tr) return;
+    memcpy(tr, prologue, 6);
+    tr[6] = 0xE9;
+    rel = (int)(0x73B416 - ((ULONG_PTR)tr + 11));
+    memcpy(tr + 7, &rel, 4);
+    g_btn_orig = (BtnCmd_t)tr;
+    rel = (int)((ULONG_PTR)btn_command_hook - (0x73B410 + 5));
+    memcpy(jmp + 1, &rel, 4);
+    write_code(0x73B410, jmp, 6, prologue);
+    call_patch(0x7002C1, (void *)af_ecx, "\x8B\x41\x18\x25\x00\x04\x00\x00");
+    call_patch(0x700409, (void *)af_edi, "\x8B\x47\x18\x25\x00\x04\x00\x00");
+    call_patch(0x718D8B, (void *)af_esi, "\x8B\x46\x18\x25\x00\x04\x00\x00");
+    FlushInstructionCache(GetCurrentProcess(), NULL, 0);
+}
+
 /* ---------------------------------------------------------------- entry points */
 
 static void init_mod(void)
 {
     if (g_status) return;
     g_status = apply_patches() ? 1 : -1;
-    if (g_status == 1) setup_configs();
+    if (g_status == 1) { install_menu_hooks(); setup_configs(); }
 }
 
 BOOL WINAPI DllMain(HINSTANCE inst, DWORD reason, LPVOID reserved)
@@ -285,7 +401,7 @@ BOOL WINAPI DllMain(HINSTANCE inst, DWORD reason, LPVOID reserved)
     (void)reserved;
     if (reason == DLL_PROCESS_ATTACH) {
         DisableThreadLibraryCalls(inst);
-        if (apply_patches()) { g_status = 1; setup_configs(); }
+        if (apply_patches()) { g_status = 1; install_menu_hooks(); setup_configs(); }
         /* otherwise retry on the first DirectInput8Create (e.g. the exe was still packed) */
     }
     return TRUE;
