@@ -40,10 +40,24 @@ static FARPROC real_proc(const char *name)
 
 /* ---------------------------------------------------------------- exe patches */
 
+/* 1 = every patch already in place (an exe that was patched on disk), 0 otherwise */
+static int already_patched(void)
+{
+    unsigned i;
+    for (i = 0; i < NPATCHES; i++) {
+        MEMORY_BASIC_INFORMATION mbi;
+        const void *p = (const void *)(ULONG_PTR)PATCHES[i].va;
+        if (!VirtualQuery(p, &mbi, sizeof mbi) || mbi.State != MEM_COMMIT) return 0;
+        if (memcmp(p, PATCHES[i].new_, PATCHES[i].len) != 0) return 0;
+    }
+    return 1;
+}
+
 static int apply_patches(void)
 {
     unsigned i;
     DWORD old;
+    if (already_patched()) return 1;
     for (i = 0; i < NPATCHES; i++) {
         MEMORY_BASIC_INFORMATION mbi;
         const void *p = (const void *)(ULONG_PTR)PATCHES[i].va;
