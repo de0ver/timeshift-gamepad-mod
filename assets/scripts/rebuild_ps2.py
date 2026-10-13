@@ -47,6 +47,25 @@ for files in blocks:
         if b'XBoxShortCut' in f[2]:
             f[2]=blk.sub(fixblk,f[2])
 json.dump(sorted(pairs),open(S+'/ui/gp_pairs.json','w')); print('gp buttons',gpn,'shortcut-fixed',sc_n,'pairs',len(pairs))
+
+# MODVER: mod name + version under the game version in the menu background
+MODBLK=b"""
+         {\r
+            type        = text\r
+            name        = ModVersion\r
+            text        = UI_GP_MODVER\r
+            posX        = 70%, 35%\r
+            textScale   = 7\r
+            textAlign   = left centerX\r
+            posY        = -55, 30\r
+         }\r"""
+mv=0
+for files in blocks:
+    for f in files:
+        if b'name        = OffVersion' in f[2] and b'ModVersion' not in f[2]:
+            i=f[2].index(b'name        = OffVersion'); j=f[2].index(b'}',i)+1
+            f[2]=f[2][:j]+MODBLK.rstrip(b"\r").replace(b'\r\n',b'\n').replace(b'\n',b'\r\n')+f[2][j:]; mv+=1
+print('modver files',mv)
 # recompute offsets properly (second pass not needed for replacement since keyed by original offsets)
 assert done==len(REPL), done
 # original compressed blocks for reuse

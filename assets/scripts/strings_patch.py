@@ -3,7 +3,7 @@ sys.path.insert(0,'/tmp/claude-0/-home-claude/5a395db8-292c-5075-84b1-06a93cc5a5
 from s3didx import read_index
 S='/tmp/claude-0/-home-claude/5a395db8-292c-5075-84b1-06a93cc5a564/scratchpad'
 d,a,es,ds,io=read_index('/mnt/user-data/outputs/pc_mod/patch_original.s3darc')
-EN={'UI_GP_SENS':'Gamepad sensitivity','UI_GP_SENS_HINT':'Camera speed for the right stick',
+EN={'UI_GP_MODVER':'Xbox 360 Gamepad Mod v1.2','UI_GP_SENS':'Gamepad sensitivity','UI_GP_SENS_HINT':'Camera speed for the right stick',
     'UI_GP_INVERT':'Gamepad invert Y','UI_GP_INVERT_HINT':'Invert vertical look on the right stick',
     'UI_GP_VIBR':'Gamepad vibration','UI_GP_VIBR_HINT':'Controller rumble',
     'UI_GP_DZ':'Gamepad dead zone','UI_GP_DZ_HINT':'Ignore small stick movements',
@@ -11,7 +11,7 @@ EN={'UI_GP_SENS':'Gamepad sensitivity','UI_GP_SENS_HINT':'Camera speed for the r
     'UI_GP_FWDBACK':'Forward/Back','UI_GP_STRAFE':'Strafe','UI_GP_TURN':'Turn','UI_GP_LOOKUD':'Look Up/Down',
     'UI_CTRL_buttons_1':'Common','UI_CTRL_buttons_2':'Left-Handed','UI_CTRL_buttons_3':'Swapped','UI_CTRL_buttons_4':'Swapped Left-Handed',
     'UI_CTRL_thumb_1':'Common','UI_CTRL_thumb_2':'Left-Handed','UI_CTRL_thumb_3':'Mixed','UI_CTRL_thumb_4':'Mixed Left-Handed'}
-RU={'UI_GP_SENS':'Чувствительность геймпада','UI_GP_SENS_HINT':'Скорость поворота камеры правым стиком',
+RU={'UI_GP_MODVER':'Xbox 360 Gamepad Mod v1.2','UI_GP_SENS':'Чувствительность геймпада','UI_GP_SENS_HINT':'Скорость поворота камеры правым стиком',
     'UI_GP_INVERT':'Инверсия геймпада по Y','UI_GP_INVERT_HINT':'Инверсия вертикального обзора правым стиком',
     'UI_GP_VIBR':'Вибрация геймпада','UI_GP_VIBR_HINT':'Вибрация контроллера',
     'UI_GP_DZ':'Мертвая зона стиков','UI_GP_DZ_HINT':'Игнорировать малые отклонения стиков',
@@ -19,8 +19,8 @@ RU={'UI_GP_SENS':'Чувствительность геймпада','UI_GP_SENS
     'UI_GP_FWDBACK':'Вперед/назад','UI_GP_STRAFE':'Вбок','UI_GP_TURN':'Поворот','UI_GP_LOOKUD':'Взгляд вверх/вниз',
     'UI_CTRL_buttons_1':'Обычная','UI_CTRL_buttons_2':'Для левши','UI_CTRL_buttons_3':'Обратная','UI_CTRL_buttons_4':'Обратная для левши',
     'UI_CTRL_thumb_1':'Обычная','UI_CTRL_thumb_2':'Для левши','UI_CTRL_thumb_3':'Смешанная','UI_CTRL_thumb_4':'Смешанная для левши'}
-REN_EN={'UI_BTN_MOUSE_CONTROLS':'CAMERA CONTROLS','UI_FRAME_OPTIONS_MOUSE':'Camera Settings'}
-REN_RU={'UI_BTN_MOUSE_CONTROLS':'КАМЕРА','UI_FRAME_OPTIONS_MOUSE':'Параметры камеры'}
+REN_EN={'UI_BTN_MOUSE_CONTROLS':'MOUSE AND GAMEPAD','UI_FRAME_OPTIONS_MOUSE':'Mouse and Gamepad'}
+REN_RU={'UI_BTN_MOUSE_CONTROLS':'МЫШЬ И ГЕЙМПАД','UI_FRAME_OPTIONS_MOUSE':'Мышь и геймпад'}
 import re,json
 GL={'A':'\u00c0','B':'\u00c1','X':'\u00c4','Y':'\u00c8'}
 PAIRS=json.load(open(S+'/ui/gp_pairs.json'))
